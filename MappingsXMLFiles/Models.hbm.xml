@@ -1,0 +1,279 @@
+﻿<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Shopsy_Project"
+                   namespace="Shopsy_Project.Models">
+
+  <!-- Mapping for TestUser -->
+  <class name="TestUser" table="TestUser">
+
+	<!-- Mapping the Id column -->
+	<id name="User_Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- Mapping the FirstName property -->
+	<property name="FirstName" type="string">
+	  <column name="FirstName" />
+	</property>
+
+	<!-- Mapping the SecondName property -->
+	<property name="SecondName" type="string">
+	  <column name="SecondName" />
+	</property>
+
+  </class>
+
+  <!-- Mapping for Users -->
+  <class name="Users" table="Users">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- Name Property -->
+	<property name="Name" type="string">
+	  <column name="Name" not-null="true" />
+	</property>
+
+	<!-- Description Property -->
+	<property name="Description" type="string">
+	  <column name="Description" />
+	</property>
+
+	<!-- DateOfBirth Property -->
+	<property name="DateOfBirth" type="date">
+	  <column name="DateOfBirth" not-null="true" />
+	</property>
+
+	<!-- Email Property -->
+	<property name="Email" type="string">
+	  <column name="Email" not-null="true" unique="true" />
+	</property>
+
+	<!-- Phone Property -->
+	<property name="Phone" type="string">
+	  <column name="Phone" not-null="true" length="15" />
+	</property>
+
+	<!-- Gender Property -->
+	<property name="Gender" type="string">
+	  <column name="Gender" not-null="true" />
+	</property>
+
+	<!-- Password Property -->
+	<property name="Password" type="string">
+	  <column name="Password" not-null="true" length="10" />
+	</property>
+
+	<!-- isActive Property -->
+	<property name="isActive" type="boolean">
+	  <column name="isActive" not-null="true" />
+	</property>
+	
+  </class>
+
+  <class name="Products" table="Products">
+
+	<!-- Primary Key Mapping -->
+	<id name="Product_Id" type="int">
+	  <column name="Product_Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- Product_Name Property -->
+	<property name="Product_Name" type="string">
+	  <column name="Product_Name" not-null="true" />
+	</property>
+
+	<!-- Brand_Id Property -->
+	<property name="Brand_Id" type="int">
+	  <column name="Brand_Id" />
+	</property>
+
+	<!-- Category_Id Property -->
+	<property name="Category_Id" type="int">
+	  <column name="Category_Id" />
+	</property>
+
+	<!-- Model_Year Property -->
+	<property name="Model_Year" type="int">
+	  <column name="Model_Year" not-null="true" />
+	</property>
+
+	<!-- List_Price Property -->
+	<property name="List_Price" type="decimal">
+	  <column name="List_Price" not-null="true" />
+	</property>
+
+	<!-- Quantity Property -->
+	<property name="Quantity" type="int">
+	  <column name="Quantity" not-null="true" />
+	</property>
+
+	<!-- Color Property -->
+	<property name="Color" type="string">
+	  <column name="Color" not-null="true" />
+	</property>
+
+  </class>
+
+  <class name="Brands" table="brands">
+
+	<!-- Primary Key Mapping -->
+	<id name="brand_Id" type="int">
+	  <column name="brand_Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- brand Name Property -->
+	<property name="brand_Name" type="string">
+	  <column name="brand_Name" not-null="true" />
+	</property>
+	
+  </class>
+
+  <class name="Categories" table="categories">
+
+	<!-- Primary Key Mapping -->
+	<id name="category_Id" type="int">
+	  <column name="category_id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- brand Name Property -->
+	<property name="category_Name" type="string">
+	  <column name="category_name" not-null="true" />
+	</property>
+
+  </class>
+
+  <class name="Cart" table="Cart">
+
+	<!-- Primary Key Mapping -->
+	<id name="Cart_Id" type="int">
+	  <column name="Cart_Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- product_Id Property -->
+	<property name="userId" type="int">
+	  <column name="userId" />
+	</property>
+	
+	<!-- product_Id Property -->
+	<property name="product_Id" type="int">
+	  <column name="product_Id" />
+	</property>
+
+	<!-- brand Name Property -->
+	<property name="Quantity" type="int">
+	  <column name="Quantity" not-null="true" />
+	</property>
+
+	<!-- brand Name Property -->
+	<property name="DateCreated" type="date">
+	  <column name="DateCreated" not-null="true" />
+	</property>
+
+  </class>
+
+  
+  <class name="WishItem" table="WishItem">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- product_Id Property -->
+	<property name="Isfavourite" type="boolean">
+	  <column name="Isfavourite" />
+	</property>
+
+	<!-- product_Id Property -->
+	<property name="userId" type="int">
+	  <column name="userId" />
+	</property>
+
+	<!-- brand Name Property -->
+	<property name="productId" type="int">
+	  <column name="product_Id" not-null="true" />
+	</property>
+
+  </class>
+
+  <!-- Mapping for AuthUsers -->
+  <class name="AuthUsers" table="AuthUsers">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- Name Property -->
+	<property name="UserName" type="string">
+	  <column name="UserName" not-null="true" />
+	</property>
+
+	<!-- Description Property -->
+	<property name="Email" type="string">
+	  <column name="Email" not-null="true"/>
+	</property>
+
+	<!-- Email Property -->
+	<property name="PasswordHash" type="string">
+	  <column name="PasswordHash" not-null="true" unique="true" />
+	</property>
+
+	<!-- Phone Property -->
+	<property name="Role" type="string">
+	  <column name="Role" />
+	</property>
+
+	<!-- isActive Property -->
+	<property name="DateCreated" type="date">
+	  <column name="DateCreated"  />
+	</property>
+
+  </class>
+
+  <class name="AuthUserTokens" table="AuthUserTokens">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- product_Id Property -->
+	<property name="UserId" type="int">
+	  <column name="UserId" not-null="true"/>
+	</property>
+
+	<!-- product_Id Property -->
+	<property name="Token" type="string">
+	  <column name="Token" not-null="true"/>
+	</property>
+
+	<!-- brand Name Property -->
+	<property name="Expiration" type="date">
+	  <column name="Expiration" not-null="true" />
+	</property>
+
+	<!-- product_Id Property -->
+	<property name="RefreshToken" type="string">
+	  <column name="RefreshToken" not-null="true"/>
+	</property>
+
+	<!-- brand Name Property -->
+	<property name="RefreshTokenExpiration" type="date">
+	  <column name="RefreshTokenExpiration" not-null="true" />
+	</property>
+
+  </class>
+  
+</hibernate-mapping>

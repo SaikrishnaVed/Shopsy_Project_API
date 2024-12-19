@@ -1,0 +1,12 @@
+﻿<hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
+  <session-factory>
+	<!-- Database connection settings -->
+	<property name="hibernate.connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
+	<property name="hibernate.connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
+	<property name="hibernate.connection.connection_string">
+	  Server=GITA002\\SQLEXPRESS;Database=Shopsy;User ID=NewTest;Password=NewTest@1234;
+	</property>
+	<property name="hibernate.dialect">NHibernate.Dialect.MsSql2012Dialect</property>
+	<!-- Other NHibernate settings -->
+  </session-factory>
+</hibernate-configuration>
