@@ -19,7 +19,7 @@ namespace Shopsy_Project.Controllers
         }
 
         [HttpPost("GetAll")]
-        //[Authorize(Policy = "AdminOnly")] commented it must access for all & Added for testing purpose only.
+        //[Authorize(Policy = "AdminOnly")]
         public IActionResult GetAllProducts([FromBody] PaginationFilter filter)
         {
             if (filter.PageNumber <= 0) filter.PageNumber = 1;
@@ -28,6 +28,7 @@ namespace Shopsy_Project.Controllers
             var pagedProducts = _blProduct.GetAllProducts(filter);
 
             return Ok(pagedProducts);
+
         }
 
         [HttpGet("GetById/{id}")]
