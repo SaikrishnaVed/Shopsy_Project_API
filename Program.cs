@@ -40,6 +40,14 @@ builder.Services.AddControllers();
 var jwtSettings = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
 builder.Services.AddSingleton(jwtSettings);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
+
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -77,7 +85,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
