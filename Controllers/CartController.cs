@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shopsy_Project.Common;
 using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
 using Shopsy_Project.Models.RequestModels;
-
 namespace Shopsy_Project.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ILogger<CartController> _logger;
@@ -21,12 +22,12 @@ namespace Shopsy_Project.Controllers
 
         // Get list of all cart items.
         [HttpGet("CartList")]
-        public IActionResult GetUserList()
+        public IActionResult GetCartList(int userId)
         {
             List<Cart> cartlist = new List<Cart>();
             try
             {
-                cartlist = _blCart.GetAllCartItems();
+                cartlist = _blCart.GetAllCartItems(userId);
                 return Ok(cartlist);
             }
             catch (Exception ex)
@@ -70,16 +71,16 @@ namespace Shopsy_Project.Controllers
                 {
                     return BadRequest("Invalid user details..");
                 }
-                if (cart == null || id != cart.Cart_Id)
-                {
-                    return BadRequest();
-                }
+                //if (cart == null || id != cart.Cart_Id)
+                //{
+                //    return BadRequest();
+                //}       
 
-                var existingCart = _blCart.GetCartById(id);
-                if (existingCart == null)
-                {
-                    return NotFound();
-                }
+                //var existingCart = _blCart.GetCartById(id);
+                //if (existingCart == null)
+                //{
+                //    return NotFound();
+                //}
 
                 _blCart.UpdateCartItems(cart);
             }
@@ -93,7 +94,7 @@ namespace Shopsy_Project.Controllers
 
         // Delete a cartItem by ID
         [HttpDelete("DeleteCart/{id}")]
-        public IActionResult DeleteUser(int id)
+        public IActionResult DeleteCart(int id)
         {
             try
             {

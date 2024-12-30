@@ -13,14 +13,14 @@ namespace Shopsy_Project.BL
             _dalProduct = dalProduct;
         }
 
-        public PagedResult<Products> GetAllProducts(PaginationFilter filter)
+        public PagedResult<Products> GetAllProducts(PaginationFilter filter, int userId)
         {
-            return _dalProduct.GetAllProducts(filter);
+            return _dalProduct.GetAllProducts(filter, userId);
         }
 
-        public Products GetProductById(int productId)
+        public Products GetProductById(int productId, int userId)
         {
-            return _dalProduct.GetProductById(productId);
+            return _dalProduct.GetProductById(productId, userId);
         }
 
         public void AddProduct(Products product)
@@ -36,6 +36,16 @@ namespace Shopsy_Project.BL
         public void DeleteProduct(int productId)
         {
             _dalProduct.DeleteProduct(productId);
+        }
+
+        public List<Categories> GetAllCategories()
+        {
+            return _dalProduct.GetAllCategories();
+        }
+
+        public List<Brands> GetAllBrands()
+        {
+            return _dalProduct.GetAllBrands();
         }
     }
 }

@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddHttpContextAccessor();
+
+//Dependency Injection with scoped lifetime.
 //For TestUser
 builder.Services.AddScoped<IBL_TestUser, BL_TestUser>();
 builder.Services.AddScoped<IDAL_TestUser, DAL_TestUser>();
@@ -33,6 +36,18 @@ builder.Services.AddScoped<IDAL_WishItem, DAL_WishItem>();
 
 builder.Services.AddScoped<IDAL_Auth, DAL_Auth>();
 builder.Services.AddScoped<IBL_Auth, BL_Auth>();
+
+builder.Services.AddScoped<IDAL_PurchaseOrder, DAL_PurchaseOrder>();
+builder.Services.AddScoped<IBL_PurchaseOrder, BL_PurchaseOrder>();
+
+builder.Services.AddScoped<IDAL_Brand, DAL_Brand>();
+builder.Services.AddScoped<IBL_Brand, BL_Brand>();
+
+builder.Services.AddScoped<IDAL_Category, DAL_Category>();
+builder.Services.AddScoped<IBL_Category, BL_Category>();
+
+builder.Services.AddScoped<IDAL_Feedback, DAL_Feedback>();
+builder.Services.AddScoped<IBL_Feedback, BL_Feedback>();
 
 builder.Services.AddControllers();
 
@@ -76,6 +91,7 @@ builder.Services.AddAuthorization(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 

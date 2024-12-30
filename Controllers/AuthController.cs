@@ -28,8 +28,9 @@ namespace Shopsy_Project.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var token = _blAuth.Login(!string.IsNullOrEmpty(request.UserName) ? request.UserName : string.Empty, !string.IsNullOrEmpty(request.Password) ? request.Password : string.Empty);
-            return Ok(new { Token = token });
+            var (userId,token, role) = _blAuth.Login(!string.IsNullOrEmpty(request.UserName) ? request.UserName : string.Empty, !string.IsNullOrEmpty(request.Password) ? request.Password : string.Empty);
+            string userName = request.UserName != null ? request.UserName : string.Empty;
+            return Ok(new { Token = token, Role = role?.ToLower(), UserId = userId, Username = userName });
         }
 
         [HttpPost("RefreshToken")]

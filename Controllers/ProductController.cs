@@ -18,23 +18,22 @@ namespace Shopsy_Project.Controllers
             _blProduct = blProduct;
         }
 
-        [HttpPost("GetAll")]
-        //[Authorize(Policy = "AdminOnly")]
-        public IActionResult GetAllProducts([FromBody] PaginationFilter filter)
+        [HttpPost("GetAll/{userid}")]
+        public IActionResult GetAllProducts([FromBody] PaginationFilter filter, int userId)
         {
             if (filter.PageNumber <= 0) filter.PageNumber = 1;
-            if (filter.PageSize <= 0) filter.PageSize = 10;
+            if (filter.PageSize <= 0) filter.PageSize = 5;
 
-            var pagedProducts = _blProduct.GetAllProducts(filter);
+            var pagedProducts = _blProduct.GetAllProducts(filter, userId);
 
             return Ok(pagedProducts);
-
         }
 
-        [HttpGet("GetById/{id}")]
-        public IActionResult GetProductById(int id)
+
+        [HttpGet("GetById/{id}/{userId}")]
+        public IActionResult GetProductById(int id, int userId)
         {
-            var product = _blProduct.GetProductById(id);
+            var product = _blProduct.GetProductById(id, userId);
             if (product == null)
             {
                 return NotFound("Product not found.");
@@ -43,32 +42,61 @@ namespace Shopsy_Project.Controllers
         }
 
         [HttpPost("Add")]
+        //[Authorize(Policy = "AdminOnly")]
         public IActionResult AddProduct([FromBody] Products product)
         {
             if (ModelState.IsValid)
             {
                 _blProduct.AddProduct(product);
-                return Ok("Product added successfully.");
+                return Ok();
             }
-            return BadRequest(ModelState);
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
-        [HttpPut("Update")]
+        [HttpPost("Update")]
+        //[Authorize(Policy = "AdminOnly")]
         public IActionResult UpdateProduct([FromBody] Products product)
         {
             if (ModelState.IsValid)
             {
                 _blProduct.UpdateProduct(product);
-                return Ok("Product updated successfully.");
+                return Ok();
             }
-            return BadRequest(ModelState);
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete("Delete/{id}")]
+        //[Authorize(Policy = "AdminOnly")]
         public IActionResult DeleteProduct(int id)
         {
             _blProduct.DeleteProduct(id);
-            return Ok("Product deleted successfully.");
+            return Ok();
+        }
+
+        //For dropdown.
+        [HttpGet("GetAllCategories")]
+        //[Authorize(Policy = "AdminOnly")]
+        public IActionResult GetAllCategories()
+        {
+            var categories = _blProduct.GetAllCategories();
+
+            return Ok(categories);
+        }
+
+        //For dropdown.
+        [HttpGet("GetAllBrands")]
+        //[Authorize(Policy = "AdminOnly")]
+        public IActionResult GetAllBrands()
+        {
+            var brands = _blProduct.GetAllBrands();
+
+            return Ok(brands);
         }
     }
 }

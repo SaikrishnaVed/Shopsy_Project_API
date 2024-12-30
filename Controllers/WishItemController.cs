@@ -35,7 +35,7 @@ namespace Shopsy_Project.Controllers
         }
 
         // Create a new user
-        [HttpPost("AddWishItems")]
+        [HttpPost("AddWishItem")]
         public IActionResult CreatewishItem([FromBody] WishItem wishItem)
         {
             try

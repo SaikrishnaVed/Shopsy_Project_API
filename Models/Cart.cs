@@ -15,6 +15,7 @@ namespace Shopsy_Project.Models
         public virtual int product_Id { get; set; }
         [Required(ErrorMessage = "brand name is required")]
         public virtual int? Quantity { get; set; }
+
         public virtual DateTime? DateCreated { get; set; }
         [NotMapped]
         public virtual Users? user { get; set; }

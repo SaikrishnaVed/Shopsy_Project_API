@@ -4,15 +4,19 @@ using Shopsy_Project.Common;
 using Shopsy_Project.Extensions;
 using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
+using Shopsy_Project.Models.RequestModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Shopsy_Project.DAL
 {
     public class DAL_Product : IDAL_Product
     {
         private readonly ISessionFactory _sessionFactory;
+        private readonly HttpContextAccessor _httpContextAccessor;
 
         public DAL_Product()
         {
@@ -20,8 +24,7 @@ namespace Shopsy_Project.DAL
             _sessionFactory = config.BuildSessionFactory();
         }
 
-        // Get all products with pagination and filtering
-        public PagedResult<Products> GetAllProducts(PaginationFilter filter)
+        public PagedResult<Products> GetAllProducts(PaginationFilter filter, int userId)
         {
             using (var session = _sessionFactory.OpenSession())
             {
@@ -31,30 +34,61 @@ namespace Shopsy_Project.DAL
                 if (!string.IsNullOrEmpty(filter.SearchTerm))
                 {
                     query = query.Where(p =>
-                        p.Product_Name != null && p.Product_Name.Contains(filter.SearchTerm) ||
-                        p.Color != null &&  p.Color.Contains(filter.SearchTerm));
+                        (p.Product_Name != null && p.Product_Name.Contains(filter.SearchTerm)) ||
+                        (p.Color != null && p.Color.Contains(filter.SearchTerm)));
                 }
 
-                // Apply sorting
-                if (!string.IsNullOrEmpty(filter.SortBy))
+                CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+                TextInfo textInfo = cultureInfo.TextInfo;
+                if (filter != null && !string.IsNullOrEmpty(filter.SortBy))
                 {
-                    query = filter.IsAscending
-                        ? query.OrderByDynamic(filter.SortBy, true)
-                        : query.OrderByDynamic(filter.SortBy, false);
-                }
-                else
-                {
-                    query = query.OrderBy(p => p.Product_Id); // Default sorting by Product_Id
-                }
+                    filter.SortBy = textInfo.ToTitleCase(filter.SortBy);
 
-                // Get total count before pagination
+
+                    if (!string.IsNullOrEmpty(filter.SortBy))
+                    {
+                        query = filter.IsAscending
+                            ? query.OrderByDynamic(filter.SortBy, true)
+                            : query.OrderByDynamic(filter.SortBy, false);
+                    }
+                    else
+                    {
+                        query = query.OrderBy(p => p.Product_Id);
+                    }
+                }
                 var totalCount = query.Count();
 
-                // Apply pagination
                 var paginatedItems = query
-                    .Skip(filter.Skip)
-                    .Take(filter.PageSize)
+                    .Skip(filter != null ? filter.Skip : 0)
+                    .Take(filter != null ? filter.PageSize : 10)
                     .ToList();
+
+                var productIds = paginatedItems.Select(p => p.Product_Id).ToList();
+                var cartCounts = session.Query<Cart>()
+                    .Where(c => c.userId == userId && productIds.Contains(c.product_Id))
+                    .GroupBy(c => c.product_Id)
+                    .Select(g => new { ProductId = g.Key, Count = g.Sum(c => c.Quantity) })
+                    .ToDictionary(x => x.ProductId, x => x.Count);
+
+                foreach (var product in paginatedItems)
+                {
+                    product.Cartcount = cartCounts.ContainsKey(product.Product_Id) ? cartCounts[product.Product_Id] : 0;
+                }
+
+                var Isfavourites = session.Query<WishItem>()
+                    .Where(c => c.userId == userId).ToList();
+
+                //update product where productid & userid same for updating Isfavourite property.
+                var favouriteItems = session.Query<WishItem>()
+                .Where(c => c.userId == userId)
+                .Select(w => w.productid) // Assuming WishItem has a ProductId property
+                .ToHashSet(); // Use HashSet for quick lookup
+
+                // Update IsFavourite property for products
+                foreach (var product in paginatedItems)
+                {
+                    product.Isfavourite = favouriteItems.Contains(product.Product_Id);
+                }
 
                 return new PagedResult<Products>
                 {
@@ -66,12 +100,41 @@ namespace Shopsy_Project.DAL
             }
         }
 
+
         // Get product by ID
-        public Products GetProductById(int productId)
+        public Products GetProductById(int productId, int userId)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                return session.Get<Products>(productId) ?? new Products();
+                Products Product = session.Get<Products>(productId) ?? new Products();
+
+                Product.Cartcount = session.Query<Cart>().Where(x=>x.userId == userId && x.product_Id == Product.Product_Id).FirstOrDefault()?.Quantity;
+
+                Product.Isfavourite = session.Query<WishItem>()
+                    .Where(c => c.userId == userId && c.productid == Product.Product_Id).FirstOrDefault()?.Isfavourite;
+
+                Product.Categories = session.Query<Categories>().Where(x=>x.category_Id == Product.Category_Id).FirstOrDefault();
+                Product.Brands = session.Query<Brands>().Where(x => x.brand_Id == Product.Brand_Id).FirstOrDefault();
+
+                return Product;
+            }
+        }
+
+        //Get All Categories
+        public List<Categories> GetAllCategories()
+        {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                return session.Query<Categories>().ToList();
+            }
+        }
+
+        //Get All Brands
+        public List<Brands> GetAllBrands()
+        {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                return session.Query<Brands>().ToList();
             }
         }
 

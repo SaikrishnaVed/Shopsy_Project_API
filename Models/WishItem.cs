@@ -12,6 +12,6 @@ namespace Shopsy_Project.Models
         public virtual int Id { get; set; }
         public virtual bool Isfavourite { get; set; }
         public virtual int userId { get; set; }
-        public virtual int productId { get; set; }
+        public virtual int productid { get; set; }
     }
 }

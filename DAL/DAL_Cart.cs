@@ -8,17 +8,27 @@ using Shopsy_Project.Models.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Shopsy_Project.DAL
 {
     public class DAL_Cart : IDAL_Cart
     {
         private readonly ISessionFactory _sessionFactory;
+        private readonly HttpContextAccessor _httpContextAccessor;
+        private readonly ClaimsPrincipal _claimsPrincipal;
 
         public DAL_Cart()
         {
             var config = ConfigurationManager.SetConfiguration();
             _sessionFactory = config.BuildSessionFactory();
+        }
+        public DAL_Cart(HttpContextAccessor httpContextAccessor, ClaimsPrincipal claimsPrincipal)
+        {
+            var config = ConfigurationManager.SetConfiguration();
+            _sessionFactory = config.BuildSessionFactory();
+            _httpContextAccessor = httpContextAccessor;
+            _claimsPrincipal = claimsPrincipal;
         }
 
         public void AddCartItems(AddCartRequest cartRequest)
@@ -30,10 +40,12 @@ namespace Shopsy_Project.DAL
                     try
                     {
                         var UId = session.Query<Cart>().Where(x => x.Quantity > 0 && x.userId == cartRequest.userId).FirstOrDefault();
-                        if (UId != null)
-                        {
-                            throw new ArgumentException("Cart already exists..");
-                        }
+
+                        //if (UId != null)
+                        //{
+                        //    throw new ArgumentException("Cart already exists..");
+                        //}
+
                         ////var IsCartExisting = session.Query<Cart>().Where(x=>x.userId == cartRequest.userId);
                         ////cartlist = session.Query<Cart>().Where(x => x.Quantity > 0).ToList();
                         //if (IsCartExisting != null)
@@ -43,6 +55,7 @@ namespace Shopsy_Project.DAL
 
                         var cart = new Cart
                         {
+                            Cart_Id = cartRequest.userId,
                             userId = cartRequest.userId,
                             product_Id = cartRequest.product_Id,
                             Quantity = cartRequest.Quantity,
@@ -87,8 +100,9 @@ namespace Shopsy_Project.DAL
             }
         }
 
-        public List<Cart> GetAllCartItems()
+        public List<Cart> GetAllCartItems(int userId)
         {
+            //var UserId = ClaimsPrincipalExtensions.GetUserId(_claimsPrincipal);
             var cartlist = new List<Cart>();
             using (var session = _sessionFactory.OpenSession())
             {
@@ -97,11 +111,11 @@ namespace Shopsy_Project.DAL
                     try
                     {
                         cartlist = session.Query<Cart>().Where(x => x.Quantity > 0).ToList();
+                        //int userId = session.Query<Users>().Select(x=>x.Id).FirstOrDefault();
+                        cartlist = cartlist.Where(x => x.userId == userId).ToList();
                         foreach (var item in cartlist)
                         {
-                            //var cart = new Cart();
-                            item.user = session.Query<Users>().FirstOrDefault(u => u.Id == item.userId);
-                            item.products = session.Query<Products>().Where(u => u.Product_Id == item.product_Id).ToList();
+                           item.products = session.Query<Products>().Where(u => u.Product_Id == item.product_Id).ToList();
                         }
 
                         tx.Commit();
@@ -152,28 +166,48 @@ namespace Shopsy_Project.DAL
                 {
                     try
                     {
-                        var existingCart = session.Get<Cart>(cart.Cart_Id);
-                        if (existingCart != null)
-                        {
-                            existingCart.product_Id = cart.product_Id;
-                            existingCart.Cart_Id = cart.Cart_Id;
-                            existingCart.DateCreated = cart.DateCreated;
-                            existingCart.Quantity = cart.Quantity;
 
-                            session.Update(existingCart);
-                        }
-                        else
+                        var cartlist = session.Query<Cart>().Where(x => x.Quantity > 0).ToList();
+                        //int userId = session.Query<Users>().Select(x=>x.Id).FirstOrDefault();
+
+                        if (cartlist.Where(x => x.product_Id == cart.product_Id && x.userId == cart.userId)?.FirstOrDefault() != null)
                         {
-                            throw new ArgumentException("Invalid Cart product or product not present in your cart.");
-                        }
+                            Cart c = cartlist.Where(x => x.product_Id == cart.product_Id && x.userId == cart.userId)?.FirstOrDefault();
+
+                            //if(cart.Quantity <= 0)
+                            //{
+                            //    this.DeleteCartItems(c.Cart_Id);
+                            //}
+                            cart.Cart_Id = c != null ? c.Cart_Id : 0;
+                        //else { 
+                            if (c != null)
+                            {
+                                Cart existingCart = new Cart();
+
+                                existingCart.product_Id = cart.product_Id;
+                                existingCart.Cart_Id = c.Cart_Id;
+                                existingCart.DateCreated = DateTime.UtcNow;
+                                existingCart.Quantity = cart.Quantity;
+                                existingCart.userId = cart.userId;
+
+                                session.Merge(existingCart);
+                            }
+                        //}
+
                         tx.Commit();
+                        }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        if(cart.Quantity == 0 && cart.Cart_Id > 0)
+                        {
+                            this.DeleteCartItems(cart.Cart_Id);
+                        }
                         tx.Rollback();
                     }
                 }
             }
+            
         }
     }
 }

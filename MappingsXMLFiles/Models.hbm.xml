@@ -117,6 +117,11 @@
 	  <column name="Color" not-null="true" />
 	</property>
 
+	<!-- Color Property -->
+	<property name="imagePath" type="string">
+	  <column name="imagePath" />
+	</property>
+
   </class>
 
   <class name="Brands" table="brands">
@@ -199,7 +204,7 @@
 	</property>
 
 	<!-- brand Name Property -->
-	<property name="productId" type="int">
+	<property name="productid" type="int">
 	  <column name="product_Id" not-null="true" />
 	</property>
 
@@ -272,6 +277,76 @@
 	<!-- brand Name Property -->
 	<property name="RefreshTokenExpiration" type="date">
 	  <column name="RefreshTokenExpiration" not-null="true" />
+	</property>
+
+  </class>
+
+  <class name="PurchaseOrder" table="purchaseOrder">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- userId Property -->
+	<property name="userId" type="int">
+	  <column name="userId" not-null="true"/>
+	</property>
+
+	<!-- product_Id Property -->
+	<property name="Product_Id" type="int">
+	  <column name="Product_Id" not-null="true"/>
+	</property>
+
+	<!-- price Property -->
+	<property name="price" type="decimal">
+	  <column name="price" not-null="true"/>
+	</property>
+
+	<!-- DateCreated Property -->
+	<property name="DateCreated" type="date">
+	  <column name="DateCreated" not-null="true" />
+	</property>
+
+	<!-- Quantity Property -->
+	<property name="Quantity" type="int">
+	  <column name="Quantity" not-null="true"/>
+	</property>
+
+  </class>
+
+  <class name="Feedback" table="feedback">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- userId Property -->
+	<property name="userId" type="int">
+	  <column name="userId" not-null="true"/>
+	</property>
+
+	<!-- rating Property -->
+	<property name="rating" type="int">
+	  <column name="rating" not-null="true"/>
+	</property>
+
+	<!-- comments Property -->
+	<property name="comments" type="string">
+	  <column name="comments" not-null="true"/>
+	</property>
+
+	<!-- product_Id Property -->
+	<property name="product_Id" type="int">
+	  <column name="product_Id" not-null="true"/>
+	</property>
+
+	<!-- DateCreated Property -->
+	<property name="DateCreated" type="date">
+	  <column name="DateCreated" not-null="true"/>
 	</property>
 
   </class>

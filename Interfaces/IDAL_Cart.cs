@@ -6,7 +6,7 @@ namespace Shopsy_Project.Interfaces
 {
     public interface IDAL_Cart
     {
-        List<Cart> GetAllCartItems();
+        List<Cart> GetAllCartItems(int userId);
         Cart GetCartById(int Id);
         void AddCartItems(AddCartRequest cart);
         void UpdateCartItems(Cart cart);

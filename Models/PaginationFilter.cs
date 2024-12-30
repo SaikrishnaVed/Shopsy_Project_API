@@ -19,5 +19,6 @@ namespace Shopsy_Project.Common
         public int TotalCount { get; set; } // Total number of records
         public int PageNumber { get; set; } // Current page number
         public int PageSize { get; set; }   // Page size
+        //public int UserId { get; set; }
     }
 }

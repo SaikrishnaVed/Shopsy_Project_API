@@ -42,4 +42,27 @@ public static class ConfigurationManager
 
         return config;
     }
+    //public static string ConnectionString
+    //{
+    //    get
+    //    {
+    //        NHibernate.Cfg.Configuration cfg = new NHibernate.Cfg.Configuration();
+    //        try
+    //        {
+    //            // Explicitly load the configuration file
+    //            cfg.Configure("hibernate.cfg.xml");
+    //            string connectionString = cfg.GetProperty(NHibernate.Cfg.Environment.ConnectionString);
+    //            if (string.IsNullOrEmpty(connectionString))
+    //            {
+    //                throw new InvalidOperationException("Connection string is empty. Check your configuration.");
+    //            }
+    //            return connectionString;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error loading NHibernate configuration: " + ex.Message, ex);
+    //        }
+    //    }
+    //}
+
 }

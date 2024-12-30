@@ -23,32 +23,10 @@ namespace Shopsy_Project.BL
             _dalAuth.Register(user);
         }
 
-        public string Login(string username, string password)
+        public (int,string,string?) Login(string username, string password)
         {
             var user = _dalAuth.Authenticate(username, password);
             if (user == null) throw new UnauthorizedAccessException("Invalid credentials.");
-
-        //    // Generate JWT
-        //    var authClaims = new List<Claim>
-        //{
-        //    new Claim(ClaimTypes.Name, user.Email != null ? user.Email : string.Empty),
-        //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        //};
-
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret != null ?_jwtSettings.Secret:string.Empty);
-        //    var tokenDescriptor = new SecurityTokenDescriptor
-        //    {
-        //        Subject = new ClaimsIdentity(authClaims),
-        //        Expires = DateTime.UtcNow.AddHours(1),
-        //        Issuer = _jwtSettings.ValidIssuer,
-        //        Audience = _jwtSettings.ValidAudience,
-        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-        //    };
-
-        //    var token = tokenHandler.CreateToken(tokenDescriptor);
-        //    return tokenHandler.WriteToken(token);
-
 
             // Add role-based claims
             var authClaims = new List<Claim>
@@ -70,7 +48,7 @@ namespace Shopsy_Project.BL
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return (user.Id,tokenHandler.WriteToken(token), user != null ? user.Role?.ToString() : "user");
         }
 
         public string RefreshAccessToken(string refreshToken)

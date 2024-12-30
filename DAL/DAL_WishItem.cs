@@ -24,10 +24,15 @@ namespace Shopsy_Project.DAL
                 {
                     try
                     {
-                        var userWishItem = session.Query<WishItem>()?.FirstOrDefault(a=>a.userId == wishItem.userId && a.productId == wishItem.productId);
+                        var userWishItem = session.Query<WishItem>()?.FirstOrDefault(a=>a.userId == wishItem.userId && a.productid == wishItem.productid);
                         if (userWishItem != null)
                         {
-                            session.Update(wishItem);
+                            if(wishItem.Id == 0)
+                            {
+                                var WishItemId = session.Query<WishItem>().Where(x=>x.userId == wishItem.userId && x.productid == wishItem.productid).FirstOrDefault()?.Id;
+                                wishItem.Id = Convert.ToInt32(WishItemId);
+                            }
+                            session.Merge(wishItem);
                         }
                         else
                         {

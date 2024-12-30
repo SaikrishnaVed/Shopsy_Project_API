@@ -13,9 +13,9 @@ namespace Shopsy_Project.BL
             _dalCart = dalCart;
         }
 
-        public List<Cart> GetAllCartItems()
+        public List<Cart> GetAllCartItems(int userId)
         {
-            return _dalCart.GetAllCartItems();
+            return _dalCart.GetAllCartItems(userId);
         }
 
         public void AddCartItems(AddCartRequest cart)

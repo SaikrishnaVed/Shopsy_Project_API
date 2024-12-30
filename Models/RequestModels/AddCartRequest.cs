@@ -8,6 +8,6 @@ namespace Shopsy_Project.Models.RequestModels
         public int userId { get; set; }
         public int product_Id { get; set; }
         public int? Quantity { get; set; }
-        public DateTime? DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; } = DateTime.UtcNow;
     }
 }
