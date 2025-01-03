@@ -360,5 +360,80 @@
 	</property>
 
   </class>
-  
+
+  <class name="Coupons" table="coupons">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- Code Property -->
+	<property name="code" type="string">
+	  <column name="code" not-null="true"/>
+	</property>
+
+	<!-- DiscountType Property -->
+	<property name="discount_type" type="string">
+	  <column name="discount_type" not-null="true"/>
+	</property>
+
+	<!-- DiscountValue Property -->
+	<property name="discount_value" type="decimal">
+	  <column name="discount_value" not-null="true"/>
+	</property>
+
+	<!-- StartDate Property -->
+	<property name="start_date" type="date">
+	  <column name="start_date" not-null="true"/>
+	</property>
+
+	<!-- EndDate Property -->
+	<property name="end_date" type="date">
+	  <column name="end_date" not-null="true"/>
+	</property>
+	
+	<!-- UsageLimit Property -->
+	<property name="usage_limit" type="int">
+	  <column name="usage_limit" not-null="true"/>
+	</property>
+
+	<!-- Status Property -->
+	<property name="status" type="string">
+	  <column name="status" not-null="true"/>
+	</property>
+	
+  </class>
+
+  <class name="CouponUsage" table="CouponUsage">
+
+	<!-- Primary Key Mapping -->
+	<id name="Id" type="int">
+	  <column name="Id" />
+	  <generator class="identity" />
+	</id>
+
+	<!-- CouponId Property -->
+	<property name="Coupon_Id" type="int">
+	  <column name="Coupon_Id" not-null="true"/>
+	</property>
+
+	<!-- UserId Property -->
+	<property name="User_Id" type="int">
+	  <column name="User_Id" not-null="true"/>
+	</property>
+
+	<!-- OrderId Property -->
+	<property name="Order_Id" type="int">
+	  <column name="Order_Id" not-null="true"/>
+	</property>
+
+	<!-- UsageDate Property -->
+	<property name="Usage_Date" type="date">
+	  <column name="Usage_date" not-null="true"/>
+	</property>
+	
+  </class>
+
 </hibernate-mapping>

@@ -7,6 +7,5 @@ namespace Shopsy_Project.Controllers
     [ApiController]
     public class CommonController : ControllerBase
     {
-        //write a code to insert excel records into mssqlserver for few properties.
     }
 }

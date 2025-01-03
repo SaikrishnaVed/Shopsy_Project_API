@@ -4,6 +4,7 @@ using Shopsy_Project.BL;
 using Shopsy_Project.DAL;
 using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
+using System.Configuration;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddHttpContextAccessor();
+
+// Configure Email Services
+var emailConfig = builder.Configuration
+        .GetSection("EmailConfiguration")
+        .Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 //Dependency Injection with scoped lifetime.
 //For TestUser
@@ -48,6 +56,9 @@ builder.Services.AddScoped<IBL_Category, BL_Category>();
 
 builder.Services.AddScoped<IDAL_Feedback, DAL_Feedback>();
 builder.Services.AddScoped<IBL_Feedback, BL_Feedback>();
+
+builder.Services.AddScoped<IDAL_Coupons, DAL_Coupons>();
+builder.Services.AddScoped<IBL_Coupons, BL_Coupons>();
 
 builder.Services.AddControllers();
 

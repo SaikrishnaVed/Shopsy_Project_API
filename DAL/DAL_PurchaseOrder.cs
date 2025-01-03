@@ -119,9 +119,6 @@ namespace Shopsy_Project.DAL
             if (purchaseOrders.Count == 0)
                 throw new ArgumentNullException(nameof(PurchaseOrder), "Purchase order details cannot be null.");
 
-            //// Create a list of purchase orders
-            //List<PurchaseOrder> purchaseOrders = new List<PurchaseOrder>();
-
             using (var session = _sessionFactory.OpenSession())
             {
                 try
@@ -133,7 +130,7 @@ namespace Shopsy_Project.DAL
                                             .Build();
                     string connectionString = configuration.GetConnectionString("ShopsyDatabase");
 
-                    // Now, pass the list of purchase orders to the stored procedure for bulk insertion
+                    // list of purchase orders to the stored procedure for bulk insertion
                     using (var connection = new SqlConnection(connectionString))
                     {
                         connection.Open();

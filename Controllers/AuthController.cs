@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shopsy_Project.Helpers;
 using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
 using Shopsy_Project.Models.RequestModels;
@@ -13,11 +14,13 @@ namespace Shopsy_Project.Controllers
     {
         private readonly IBL_Auth _blAuth;
         private readonly JwtSettings _jwtSettings;
+        private readonly EmailSender _emailSender;
 
-        public AuthController(IBL_Auth blAuth, JwtSettings jwtSettings)
+        public AuthController(IBL_Auth blAuth, JwtSettings jwtSettings, EmailSender emailSender)
         {
             _blAuth = blAuth;
             _jwtSettings = jwtSettings;
+            _emailSender = emailSender;
         }
 
         [HttpPost("Register")]
@@ -32,6 +35,10 @@ namespace Shopsy_Project.Controllers
         {
             var (userId,token, role) = _blAuth.Login(!string.IsNullOrEmpty(request.UserName) ? request.UserName : string.Empty, !string.IsNullOrEmpty(request.Password) ? request.Password : string.Empty);
             string userName = request.UserName != null ? request.UserName : string.Empty;
+
+            var message = new Message(new string[] { "saikrishnavedagiri567@mailinator.com" }, "Test email", "Hi, saikrishna here. I just got logged in.");
+            _emailSender.SendEmail(message);
+
             return Ok(new { Token = token, Role = role?.ToLower(), UserId = userId, Username = userName });
         }
 
