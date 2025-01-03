@@ -14,6 +14,10 @@ namespace Shopsy_Project.Models
         public virtual string? Email { get; set; }
         public virtual string? PasswordHash { get; set; }
         public virtual string? Role { get; set; }
+        public virtual string? Phone { get; set; }
+        public virtual string? Gender { get; set; }
+        public virtual bool? isActive { get; set; }
         public virtual DateTime DateCreated { get; set; } = DateTime.UtcNow;
+        public virtual DateTime DateOfBirth { get; set; }
     }
 }

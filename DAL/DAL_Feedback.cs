@@ -115,5 +115,31 @@ namespace Shopsy_Project.DAL
             }
         }
 
+        public void DeleteFeedback(Feedback feedback)
+        {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    try
+                    {
+                        var IsFeedbackExisting = session.Get<Feedback>(feedback.Id);
+                        if (IsFeedbackExisting == null)
+                        {
+                            throw new ArgumentException("User Feedback already deleted or not exists..");
+                        }
+
+                        session.Delete(IsFeedbackExisting);
+                        tx.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        tx.Rollback();
+                        throw new ArgumentException("Error while deleting records.", ex);
+                    }
+                }
+            }
+        }
+
     }
 }

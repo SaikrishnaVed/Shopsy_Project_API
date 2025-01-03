@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
+using Shopsy_Project.Models.RequestModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -83,6 +84,26 @@ namespace Shopsy_Project.BL
             });
 
             return newAccessToken;
+        }
+
+        public List<UserRequest> GetAuthUsers()
+        {
+            return _dalAuth.GetAuthUsers();
+        }
+
+        public void UpdateUserRole(UpdateUserRequest updateUserRequest)
+        {
+            _dalAuth.UpdateUserRole(updateUserRequest);
+        }
+
+        public void UpdateUserProfile(UserProfile userProfile)
+        {
+            _dalAuth.UpdateUserProfile(userProfile);
+        }
+
+        public AuthUsers GetAuthUserById(int userId)
+        {
+            return _dalAuth.GetAuthUserById(userId);
         }
     }
 }

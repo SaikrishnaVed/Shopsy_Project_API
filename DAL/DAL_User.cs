@@ -3,6 +3,7 @@ using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
 using NHibernate.Linq;
 using System.Web.Http.ModelBinding;
+using Shopsy_Project.Models.RequestModels;
 
 namespace Shopsy_Project.DAL
 {
@@ -20,6 +21,7 @@ namespace Shopsy_Project.DAL
         public List<Users> UserList()
         {
             var userList = new List<Users>();
+
             using (var session = sessionFactory.OpenSession())
             {
                 using (var tx = session.BeginTransaction())
@@ -27,6 +29,7 @@ namespace Shopsy_Project.DAL
                     try
                     {
                         userList = session.Query<Users>().ToList();
+
                         tx.Commit();
                     }
                     catch

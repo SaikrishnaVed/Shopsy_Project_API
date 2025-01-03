@@ -1,4 +1,5 @@
 ﻿using Shopsy_Project.Models;
+using Shopsy_Project.Models.RequestModels;
 
 namespace Shopsy_Project.Interfaces
 {
@@ -9,5 +10,9 @@ namespace Shopsy_Project.Interfaces
         void SaveToken(AuthUserTokens token);
         bool IsTokenValid(string token);
         AuthUserTokens ValidateRefreshToken(string refreshToken);
+        List<UserRequest> GetAuthUsers();
+        void UpdateUserRole(UpdateUserRequest updateUserRequest);
+        void UpdateUserProfile(UserProfile userProfile);
+        AuthUsers GetAuthUserById(int userId);
     }
 }

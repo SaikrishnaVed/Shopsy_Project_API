@@ -17,6 +17,11 @@ namespace Shopsy_Project.BL
             _dAL_Feedback.AddOrUpdateFeedback(feedback);
         }
 
+        public void DeleteFeedback(Feedback feedback)
+        {
+            _dAL_Feedback.DeleteFeedback(feedback);
+        }
+
         public List<Feedback> GetAllFeedbacks(int product_Id)
         {
             return _dAL_Feedback.GetAllFeedbacks(product_Id);

@@ -213,35 +213,45 @@
   <!-- Mapping for AuthUsers -->
   <class name="AuthUsers" table="AuthUsers">
 
-	<!-- Primary Key Mapping -->
 	<id name="Id" type="int">
 	  <column name="Id" />
 	  <generator class="identity" />
 	</id>
 
-	<!-- Name Property -->
 	<property name="UserName" type="string">
 	  <column name="UserName" not-null="true" />
 	</property>
 
-	<!-- Description Property -->
 	<property name="Email" type="string">
 	  <column name="Email" not-null="true"/>
 	</property>
 
-	<!-- Email Property -->
 	<property name="PasswordHash" type="string">
 	  <column name="PasswordHash" not-null="true" unique="true" />
 	</property>
 
-	<!-- Phone Property -->
 	<property name="Role" type="string">
 	  <column name="Role" />
 	</property>
 
-	<!-- isActive Property -->
 	<property name="DateCreated" type="date">
 	  <column name="DateCreated"  />
+	</property>
+
+	<property name="DateOfBirth" type="date">
+	  <column name="DateOfBirth"  />
+	</property>
+
+	<property name="Phone" type="string">
+	  <column name="Phone" />
+	</property>
+
+	<property name="Gender" type="string">
+	  <column name="Gender" />
+	</property>
+
+	<property name="isActive" type="boolean">
+	  <column name="isActive" />
 	</property>
 
   </class>

@@ -3,6 +3,9 @@ using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
 using System.Text;
 using System.Security.Cryptography;
+using Shopsy_Project.Models.RequestModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Shopsy_Project.DAL
 {
@@ -70,6 +73,41 @@ namespace Shopsy_Project.DAL
             }
         }
 
+        public List<UserRequest> GetAuthUsers()
+        {
+            List<AuthUsers> userList = new List<AuthUsers>();
+            List<UserRequest> users = new List<UserRequest>();
+            using (var session = _sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                try
+                {
+                    userList = session.Query<AuthUsers>().ToList();
+                    foreach (var item in userList)
+                    {
+                        UserRequest user = new UserRequest()
+                        {
+                            Id = item.Id,
+                            UserName = item.UserName,
+                            Email = item.Email,
+                            Role = item.Role,
+                            DateOfBirth = item.DateOfBirth,
+                            Gender = item.Gender,
+                            isActive = item.isActive,
+                            Phone = item.Phone,
+                        };
+                        users.Add(user);
+                    }
+                    return users;
+                }
+                catch
+                {
+                    tx.Rollback();
+                    return new List<UserRequest>();
+                }
+            }
+        }
+
         public AuthUserTokens ValidateRefreshToken(string refreshToken)
         {
             using (var session = _sessionFactory.OpenSession())
@@ -103,6 +141,51 @@ namespace Shopsy_Project.DAL
         private bool VerifyPassword(string hashedPassword, string plainPassword)
         {
             return HashPassword(plainPassword) == hashedPassword;
+        }
+
+        public void UpdateUserRole(UpdateUserRequest updateUserRequest)
+        {
+            using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                AuthUsers user = session.Query<AuthUsers>().FirstOrDefault(x=>x.Id == updateUserRequest.userId);
+                if (user != null) {
+                    user.Role = updateUserRequest.role;
+                    user.isActive = updateUserRequest.isActive;
+                    session.Save(user);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void UpdateUserProfile(UserProfile userProfile)
+        {
+            using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                AuthUsers user = session.Query<AuthUsers>().FirstOrDefault(x => x.Id == userProfile.Id);
+                if (user != null)
+                {
+                    user.UserName = userProfile.UserName;
+                    user.DateOfBirth = userProfile.DateOfBirth;
+                    user.Gender = userProfile.Gender;
+                    user.Phone = userProfile.Phone;
+                    user.Email = userProfile.Email;
+                    
+                    session.Save(user);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public AuthUsers GetAuthUserById(int userId) 
+        {
+            using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                AuthUsers user = session.Query<AuthUsers>().FirstOrDefault(x => x.Id == userId);
+                return user;
+            }
         }
     }
 }

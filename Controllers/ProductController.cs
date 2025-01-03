@@ -29,7 +29,6 @@ namespace Shopsy_Project.Controllers
             return Ok(pagedProducts);
         }
 
-
         [HttpGet("GetById/{id}/{userId}")]
         public IActionResult GetProductById(int id, int userId)
         {
@@ -40,9 +39,8 @@ namespace Shopsy_Project.Controllers
             }
             return Ok(product);
         }
-
+        
         [HttpPost("Add")]
-        //[Authorize(Policy = "AdminOnly")]
         public IActionResult AddProduct([FromBody] Products product)
         {
             if (ModelState.IsValid)

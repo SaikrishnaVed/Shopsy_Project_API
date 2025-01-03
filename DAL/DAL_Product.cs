@@ -29,6 +29,7 @@ namespace Shopsy_Project.DAL
             using (var session = _sessionFactory.OpenSession())
             {
                 var query = session.Query<Products>();
+                var newquery = session.Query<WishItem>();
 
                 // Apply search filter
                 if (!string.IsNullOrEmpty(filter.SearchTerm))
@@ -36,6 +37,16 @@ namespace Shopsy_Project.DAL
                     query = query.Where(p =>
                         (p.Product_Name != null && p.Product_Name.Contains(filter.SearchTerm)) ||
                         (p.Color != null && p.Color.Contains(filter.SearchTerm)));
+                }
+
+                if (filter.isWishListFilter)
+                {
+                    var favoriteProductIds = session.Query<WishItem>()
+                        .Where(w => w.userId == userId && w.Isfavourite)
+                        .Select(w => w.productid)
+                        .ToList(); // Fetch favorite product IDs for the user
+
+                    query = query.Where(p => favoriteProductIds.Contains(p.Product_Id));
                 }
 
                 CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
@@ -57,11 +68,21 @@ namespace Shopsy_Project.DAL
                     }
                 }
                 var totalCount = query.Count();
-
-                var paginatedItems = query
-                    .Skip(filter != null ? filter.Skip : 0)
-                    .Take(filter != null ? filter.PageSize : 10)
-                    .ToList();
+                List<Products> paginatedItems = new List<Products>();
+                //Adding wishListFilter logic
+                //if (filter != null && filter.isWishListFilter)
+                //{
+                //    paginatedItems = query
+                //    .Where(x=>x.Isfavourite == true)
+                //    .ToList();
+                //}
+                //else
+                //{
+                    paginatedItems = query
+                        //.Skip(filter != null ? filter.Skip : 0)
+                        //.Take(filter != null ? filter.PageSize : 10)
+                        .ToList();
+                //}
 
                 var productIds = paginatedItems.Select(p => p.Product_Id).ToList();
                 var cartCounts = session.Query<Cart>()
@@ -108,7 +129,7 @@ namespace Shopsy_Project.DAL
             {
                 Products Product = session.Get<Products>(productId) ?? new Products();
 
-                Product.Cartcount = session.Query<Cart>().Where(x=>x.userId == userId && x.product_Id == Product.Product_Id).FirstOrDefault()?.Quantity;
+                Product.Cartcount = session.Query<Cart>().Where(x=>x.userId == userId && x.product_Id == Product.Product_Id).FirstOrDefault()?.Quantity ?? 0;
 
                 Product.Isfavourite = session.Query<WishItem>()
                     .Where(c => c.userId == userId && c.productid == Product.Product_Id).FirstOrDefault()?.Isfavourite;

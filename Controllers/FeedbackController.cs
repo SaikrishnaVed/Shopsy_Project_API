@@ -40,5 +40,20 @@ namespace Shopsy_Project.Controllers
             }
             return Ok(feedback);
         }
+
+        // Delete a cartItem by ID
+        [HttpPost("DeleteFeedback")]
+        public IActionResult DeleteFeedback(Feedback feedback)
+        {
+            try
+            {
+                _bL_Feedback.DeleteFeedback(feedback);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok();
+        }
     }
 }

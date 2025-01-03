@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shopsy_Project.Interfaces;
 using Shopsy_Project.Models;
+using Shopsy_Project.Models.RequestModels;
 
 namespace Shopsy_Project.Controllers
 {
@@ -38,6 +40,70 @@ namespace Shopsy_Project.Controllers
         {
             var newAccessToken = _blAuth.RefreshAccessToken(request.RefreshToken != null ? request.RefreshToken : string.Empty);
             return Ok(new { Token = newAccessToken });
+        }
+
+        // Get list of all users
+        [HttpGet("AuthUserList")]
+        //[Authorize(Policy = "AdminOnly")]
+        public IActionResult GetUserList()
+        {
+            List<UserRequest> userlist = new List<UserRequest>();
+            try
+            {
+                userlist = _blAuth.GetAuthUsers();
+                return Ok(userlist);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "LogError: An error occurred while processing the request.");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Update role of user.
+        [HttpPost("UpdateUserRole")]
+        //[Authorize(Policy = "AdminOnly")]
+        public IActionResult UpdateUserRole(UpdateUserRequest updateUserRequest)
+        {
+            try
+            {
+                _blAuth.UpdateUserRole(updateUserRequest);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Update profile of user.
+        [HttpPost("UpdateUserProfile")]
+        public IActionResult UpdateUserProfile(UserProfile userProfile)
+        {
+            try
+            {
+                _blAuth.UpdateUserProfile(userProfile);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Update profile of user.
+        [HttpGet("GetAuthUserById/{userId}")]
+        public IActionResult GetAuthUserById(int userId)
+        {
+            try
+            {
+                var user = _blAuth.GetAuthUserById(userId);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

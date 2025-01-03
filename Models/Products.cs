@@ -24,5 +24,7 @@ namespace Shopsy_Project.Models
         public virtual Categories? Categories { get; set; }
         [NotMapped]
         public virtual Brands? Brands { get; set; }
+        [NotMapped]
+        public virtual bool? isWishListFilter { get; set; }
     }
 }
